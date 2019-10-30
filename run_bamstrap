@@ -1,0 +1,52 @@
+#!/bin/sh
+
+set -e
+
+if [ -z "$USER" ]; then
+  echo "Aborting! No USER environment variable set"
+  exit 1;
+fi
+
+if [ $(id -u) = 0 ]; then
+  echo "Aborting! Must not be run as root"
+  exit 2
+fi
+
+if ! command -v curl >/dev/null 2>&1; then
+  echo "Aborting! No curl found (install and retry)"
+  exit 3
+fi
+
+if ! command -v ruby >/dev/null || \
+   (command -v ruby >/dev/null && ruby -e 'exit RUBY_VERSION.split(".").first(2).join(".").to_f < 2.3'); then
+  echo "No suitable Ruby found (installing vendor Ruby)"
+  eval "`curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install-ruby`"
+fi
+
+if [ -z "$GITHUB_TOKEN" ]; then
+  echo "Aborting! No GITHUB_TOKEN provided"
+  echo "1. Follow these instructions to generate a personal access token: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line"
+  echo "2. Provide this token in the GITHUB_TOKEN environment variable when running this script"
+  exit 4
+fi
+
+run_curl() {
+  ORGANISATION="bambooengineering"
+  REPO="umbrella"
+  FILE_PATH="bambrew/lib/bambrew/bamstrap.rb"
+  URL="https://api.github.com/repos/$ORGANISATION/$REPO/contents/$FILE_PATH"
+
+  curl $* --header "Authorization: token $GITHUB_TOKEN" \
+       --header "Accept: application/vnd.github.v3.raw" \
+       --silent \
+       --show-error \
+       --location $URL
+}
+
+code=$(run_curl -o /dev/null -w "%{http_code}")
+if [ "$code" != "200" ]; then
+  echo "Unexpected response code $code"
+  exit 5
+fi
+
+ruby -e "$(run_curl)"
