@@ -4,17 +4,17 @@ set -e
 
 if [ -z "$USER" ]; then
   echo "Aborting! No USER environment variable set"
-  exit 1;
+  exit 3;
 fi
 
 if [ "$(id -u)" = 0 ]; then
   echo "Aborting! Must not be run as root"
-  exit 2
+  exit 4
 fi
 
 if ! command -v curl >/dev/null 2>&1; then
   echo "Aborting! No curl found (install and retry)"
-  exit 3
+  exit 5
 fi
 
 if ! command -v ruby >/dev/null || \
@@ -27,7 +27,7 @@ if [ -z "$GITHUB_TOKEN" ]; then
   echo "Aborting! No GITHUB_TOKEN provided"
   echo "1. Follow these instructions to generate a personal access token: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line"
   echo "2. Provide this token in the GITHUB_TOKEN environment variable when running this script"
-  exit 4
+  exit 6
 fi
 
 run_curl() {
@@ -46,7 +46,7 @@ run_curl() {
 code=$(run_curl -o /dev/null -w "%{http_code}")
 if [ "$code" != "200" ]; then
   echo "Unexpected response code $code"
-  exit 5
+  exit 7
 fi
 
 ruby -e "$(run_curl)"
