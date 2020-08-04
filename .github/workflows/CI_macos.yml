@@ -21,6 +21,7 @@ jobs:
   install: # job name
     runs-on: macos-latest
     steps:
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: >
-          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           sh -c "$(curl -fsSL https://github.com/bambooengineering/bambrew/raw/master/run_bamstrap)"
