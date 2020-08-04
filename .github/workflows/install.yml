@@ -1,5 +1,0 @@
-# Workflow to install bambrew tooling on a Github runner to confirm
-# version integrity. Non-zero exit codes should be
-# addressed before using bambrew to set up new dev environments.
-#
-# Runs weekly.
