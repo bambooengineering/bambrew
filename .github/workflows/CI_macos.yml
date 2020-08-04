@@ -8,17 +8,17 @@ name: CI
 
 on:
   push:
-    branches:
-      - master
-    paths:
-      - "**.sh"
+    # branches:
+    #   - master
+    # paths:
+    #   - "**.sh"
   schedule:
-    - cron: "* 0 * * 2"
-  workflow_dispatch: # for workflow testing
+    - cron: "15 0 * * 2"
+  workflow_dispatch:
+    # manual trigger for workflow testing
 
 jobs:
-  # This workflow contains a single job called "install"
-  install:
+  install: # job name
     runs-on: macos-latest
     steps:
       - run: >
