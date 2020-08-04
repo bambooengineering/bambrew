@@ -2,25 +2,29 @@
 # version integrity. Non-zero exit codes should be
 # addressed before using bambrew to set up new dev environments.
 #
-# Runs weekly.
+# Runs nightly at 00:15.
 
 name: CI
 
 on:
   push:
-    # branches:
-    #   - master
-    # paths:
-    #   - "**.sh"
+    # TODO: Delete after testing
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "**.sh"
+      - "run_bamstrap"
   schedule:
-    - cron: "15 0 * * 2"
-  workflow_dispatch:
-    # manual trigger for workflow testing
+    - cron: "15 0 * * *"
 
 jobs:
-  install: # job name
-    runs-on: macos-latest
+  run_bamstrap:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-10.15, ubuntu-20.04]
     steps:
       - env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ANGUS_PAT }}
         run: sh -c "$(curl -fsSL https://github.com/bambooengineering/bambrew/raw/master/run_bamstrap)"
