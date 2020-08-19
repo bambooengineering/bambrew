@@ -1,0 +1,30 @@
+# Workflow to verify that install_homebrew.sh correctly installs
+# homebrew and Ruby on macOS and Linux. Non-zero exit codes should be
+# addressed before using bambrew to set up new dev environments.
+#
+# Runs nightly at 00:15.
+
+name: install_homebrew_CI
+
+on:
+  push:
+    # TODO: Delete push trigger after testing
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "./install_homebrew.sh"
+  schedule:
+    - cron: "15 0 * * *"
+
+jobs:
+  run_bamstrap:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-10.15, ubuntu-20.04]
+
+    steps:
+        - uses: actions/checkout@v2
+        - run: sh -c ./install_homebrew.sh
+        - run: ruby --version
