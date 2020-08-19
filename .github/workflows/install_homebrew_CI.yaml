@@ -25,9 +25,9 @@ jobs:
         os: [macos-10.15, ubuntu-20.04]
 
     steps:
-        # homebrew and Ruby are already present on GitHub runners and
-        # must be removed.
+        # homebrew is already present on GitHub runners and must be
+        # removed before testing the install script.
         - run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)"
         - uses: actions/checkout@v2
-        - run: sh -c ./install_homebrew.sh
+        - run: /bin/bash -c ./install_homebrew.sh
         - run: ruby --version
