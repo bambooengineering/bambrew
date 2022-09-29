@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -24,10 +24,8 @@ if ! command -v ruby >/dev/null || \
 fi
 
 if [ -z "$GITHUB_TOKEN" ]; then
-  echo "Aborting! No GITHUB_TOKEN provided"
-  echo "1. Follow these instructions to generate a personal access token: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line"
-  echo "2. Provide this token in the GITHUB_TOKEN environment variable when running this script"
-  exit 6
+  echo "Please provide your Github Token (you can generate one at https://github.com/settings/tokens):"
+  read -s GITHUB_TOKEN
 fi
 
 run_curl() {
