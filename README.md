@@ -8,7 +8,7 @@ Bambrew - Bamboo Engineering's development environment setup tooling
 1. Run the following at a command prompt:
 
 ```
-$ GITHUB_TOKEN="your access token" sh -c "$(curl -fsSL https://github.com/bambooengineering/bambrew/raw/master/run_bamstrap)"
+sh -c "$(curl -fsSL https://github.com/bambooengineering/bambrew/raw/master/run_bamstrap)"
 ```
 
 [1]: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
