@@ -20,6 +20,7 @@ if ! command -v curl >/dev/null 2>&1; then
   exit 5
 fi
 
+echo "Checking for brew installation"
 if ! [ -x "$(command -v brew)" ]; then
   # https://docs.brew.sh/Homebrew-on-Linux
   echo "Installing brew"
