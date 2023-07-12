@@ -12,15 +12,30 @@ if [ "$(id -u)" = 0 ]; then
   exit 4
 fi
 
+echo "Requesting sudo access to install packages if needed"
+sudo date
+
 if ! command -v curl >/dev/null 2>&1; then
   echo "Aborting! No curl found (install and retry)"
   exit 5
 fi
 
+if ! [ -x "$(command -v brew)" ]; then
+  # https://docs.brew.sh/Homebrew-on-Linux
+  echo "Installing brew"
+  sudo apt-get install build-essential procps curl file git
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
 if ! command -v ruby >/dev/null || \
    (command -v ruby >/dev/null && ruby -e 'exit RUBY_VERSION.split(".").first(2).join(".").to_f < 2.3'); then
   echo "No suitable Ruby found (installing vendor Ruby)"
-  eval "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install-ruby)"
+  RUBY_INSTALL_HTTP_STATUS=$(curl -fsSL "https://raw.githubusercontent.com/Linuxbrew/install/master/install-ruby")
+
+  if [[ $RUBY_INSTALL_HTTP_STATUS -eq 404 ]]; then
+      echo "Error: 404 Not Found"
+      exit 1
+  fi
 fi
 
 if [ -z "$GITHUB_TOKEN" ]; then
