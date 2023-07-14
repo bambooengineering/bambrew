@@ -3,8 +3,9 @@ Bambrew - Bamboo Engineering's development environment setup tooling
 
 # First time setup
 
+1. Copy on your personl SSH keys to ~/.ssh (including the one you use to access GitHub).
 1. On another machine (maybe) set up a GitHub [personal access token][1].
-1. Copy it to your new machine here: `~/.config/hub` in this file format:
+1. Create a file in the following format and copy it to `~/.config/hub`:
    ```yaml
    github.com:
    - user: <username>
