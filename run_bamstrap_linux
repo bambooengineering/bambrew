@@ -41,3 +41,5 @@ if [ ! -d "~/.umbrella" ]; then
   nix shell -p git -c "git clone git@github.com:bambooengineering/umbrella.git $SILVERCAT_GIT_CHECKOUTS_DIR/umbrella"
   ln -s "$SILVERCAT_GIT_CHECKOUTS_DIR/umbrella" ~/.umbrella
 fi
+
+# TODO: allow setting umbrella checkout branch if doing work on it etc..
