@@ -29,50 +29,40 @@ in that repo.
     nix-channel --update
     nix-shell '<home-manager>' -A install
     ```
-1. We need to get git and zsh on the machine. Add the following to your
-   `~/.config/home-manager/home.nix` file:
-    ```nix
-    { pkgs, ... }:
-    {
-      home.packages = [
-        # Add these 2 lines in the right place
-        pkgs.zsh
-        pkgs.git
-      ];
-    }
-    ```
-1. Run the following command to install the git packages specified above:
-    ```bash
-    home-manager switch
-    ```
-1. Copy your ssh key into `/home/<username>/.ssh`. Typically, this is your `~/.ssh/id_ed25519` file.
-   You may need a USB key for this.
-   You can also run this to add your passphrase to the `ssh-agent`:
-   ```bash
-   ssh-add ~/.ssh/id_ed25519
-   ```
-1. Run the following command to clone the latest version of the umbrella git repo:
+2. We need to get git and zsh on the machine. Run:
+    `nix-shell -p zsh git gh`
+3. Step three is optional you can either:
+   1. Copy your ssh key into `/home/<username>/.ssh`. Typically, this is your `~/.ssh/id_ed25519` file.
+      You may need a USB key for this.
+      You can also run this to add your passphrase to the `ssh-agent`:
+      ```bash
+        ssh-add ~/.ssh/id_ed25519
+      ```
+    2. Use `gh` as installed above and run: `gh auth login`
+       This will then prompt you to authenticate with github, which you can do via the browser.
+
+4. Run the following command to clone the latest version of the umbrella git repo:
     ```bash
     # You can customise this with your favourite place to put git repos
     SILVERCAT_GIT_CHECKOUTS_DIR=~/code/gh/bambooengineering
     mkdir -p $SILVERCAT_GIT_CHECKOUTS_DIR
-    git clone git@github.com:bambooengineering/umbrella.git $SILVERCAT_GIT_CHECKOUTS_DIR/umbrella
-    # Then link it to a known location 
+    gh repo clone bambooengineering/umbrella $SILVERCAT_GIT_CHECKOUTS_DIR/umbrella
+    # Then link it to a known location
     ln -s $SILVERCAT_GIT_CHECKOUTS_DIR/umbrella ~/.umbrella
     ```
-1. Add this to the top of your `~/.config/home-manager/home.nix` file:
+5. Add this to the top of your `~/.config/home-manager/home.nix` file:
     ```nix
     imports = [
         /home/<username>/.umbrella/bambrew/assets/nix/silvercat.nix
     ];
     ```
-1. Run the following command to install the silvercat `home-manager` packages and system utilities.
+6. Run the following command to install the silvercat `home-manager` packages and system utilities.
    Note, this is idempotent and should be quick once completed a first time. You should run it
    regularly.
    ```bash
     ~/.umbrella/bambrew/scripts/setup.sh
    ```
-   
+
 That's it. Read the bambrew docs on starting up the development environment.
    ```
 
