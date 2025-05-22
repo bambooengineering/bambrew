@@ -2,14 +2,21 @@
 
 set -e
 
+if [ "$(id -u)" = 0 ]; then
+  echo "Aborting! Must not be run as root"
+  exit 4
+fi
+
 if [ -z "$USER" ]; then
   echo "Aborting! No USER environment variable set"
   exit 3;
 fi
 
-if [ "$(id -u)" = 0 ]; then
-  echo "Aborting! Must not be run as root"
-  exit 4
+if [ -z "$SILVERCAT_GIT_CHECKOUTS_DIR" ]; then
+  echo "Aborting! No SILVERCAT_GIT_CHECKOUTS_DIR environment variable set"
+  echo "Set it to any directory where you want to clone all Silvercat repos."
+  echo "For example: export SILVERCAT_GIT_CHECKOUTS_DIR=~/code/gh/bambooengineering"
+  exit 3;
 fi
 
 if [ ! -f "$HOME/.ssh/id_rsa.pub" ]; then
@@ -22,7 +29,8 @@ fi
 if [ ! -d "nix" ]; then
   echo "Installing nix..."
   sh <(curl -L https://nixos.org/nix/install) --daemon
-  # TODO: Need new shell here?
+  echo "Done installing nix! Open a new shell then run this script again."
+  exit 1
 fi
 
 if [ -x "$(command -v home-manager)" ]; then
@@ -31,15 +39,25 @@ if [ -x "$(command -v home-manager)" ]; then
   nix-channel --update
   nix-shell '<home-manager>' -A install
   home-manager switch
-  # TODO: Need new shell here?
+
+  echo "Now you must set up your machine to clone GitHub repos. You can do this one of two ways:
+
+  1. Copy your ssh key into /home/<username>/.ssh. Typically, this is your ~/.ssh/id_ed25519 file.
+     You may need a USB key for this.
+     You can also run this to add your passphrase to the ssh-agent:
+       ssh-add ~/.ssh/id_ed25519
+  2. Use gh as installed above and run: gh auth login
+     This will then prompt you to authenticate with github, which you can do via the browser."
+
+  echo "After you have done that, run this script again."
+  exit 1
 fi
 
 if [ ! -d "~/.umbrella" ]; then
-  "${SILVERCAT_GIT_CHECKOUTS_DIR:=$HOME/code/gh/bambooengineering}"
-  echo "Cloning umbrella into $SILVERCAT_GIT_CHECKOUTS_DIR... (change SILVERCAT_GIT_CHECKOUTS_DIR ENV to put it somewhere else)"
+  echo "Cloning umbrella into $SILVERCAT_GIT_CHECKOUTS_DIR..."
   mkdir -p "$SILVERCAT_GIT_CHECKOUTS_DIR"
   nix shell -p git -c "git clone git@github.com:bambooengineering/umbrella.git $SILVERCAT_GIT_CHECKOUTS_DIR/umbrella"
   ln -s "$SILVERCAT_GIT_CHECKOUTS_DIR/umbrella" ~/.umbrella
 fi
 
-# TODO: allow setting umbrella checkout branch if doing work on it etc..
+echo "Completed checkout. Now add the silvercat.nix to your home-manager config and "
